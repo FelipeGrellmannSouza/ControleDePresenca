@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "253523277673",
+    "project_id": "controledepresenca-fe08f",
+    "storage_bucket": "controledepresenca-fe08f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253523277673:android:0d08b0d1e3a97b31f8aff8",
+        "android_client_info": {
+          "package_name": "com.example.controledepresenca"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxoYtgU8nZvOfP1c53FG35HF7kb7liOq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
