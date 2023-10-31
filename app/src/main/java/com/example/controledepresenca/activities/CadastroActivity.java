@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.controledepresenca.DAO.UsuarioDAO;
@@ -26,52 +28,101 @@ public class CadastroActivity extends AppCompatActivity {
     private UsuarioDAO usuarioDAO;
     Usuario usuario;
     FirebaseAuth auth;
-    EditText edtEmail, edtSenha;
+    EditText edtEmail, edtSenha, edtNome, edtRgm;
     Button btnCadastrar;
+    RadioGroup radioGroup;
+    RadioButton rdbAluno, rdbProfessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
-
         Incializar();
-
 
     }
     //método para organização do código
     public void Incializar(){
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
+        edtNome = findViewById(R.id.edtNome);
         btnCadastrar = findViewById(R.id.btnCadastrar);
+        radioGroup = findViewById(R.id.radioGroup);
+        rdbAluno = findViewById(R.id.rdbAluno);
+        rdbProfessor = findViewById(R.id.rdbProfessor);
+        edtRgm = findViewById(R.id.edtRgm);
 
         usuarioDAO = new UsuarioDAO(this);
     }
 
-    public void validarCampos(View view){
+    public void validarCampos(View view) {
         String email = edtEmail.getText().toString();
         String senha = edtSenha.getText().toString();
-        if(!email.isEmpty()){
-            if (!senha.isEmpty()){
-                usuario = new Usuario();
-                usuario.setEmail(email);
-                usuario.setSenha(senha);
-                cadastrarUsuario(usuario);
-            }else{
-                Toast.makeText(this, "Preencha a senha corratamente", Toast.LENGTH_SHORT).show();
+        String modo = modoSelecionando();
+        String nome = edtNome.getText().toString();
+        String rgm = edtRgm.getText().toString();
+
+        if (!nome.isEmpty()) {
+            if (!rgm.isEmpty()) {
+                if (!email.isEmpty()) {
+                    if (!senha.isEmpty()) {
+                        if (modo != null) {
+                            //estaciando o objeto usuario
+                            usuario = new Usuario();
+                            usuario.setEmail(email);
+                            usuario.setSenha(senha);
+                            usuario.setNome(nome);
+                            usuario.setRgm(rgm);
+                            usuario.setModo(modo);
+                            cadastrarUsuario(usuario);
+                            if(modo == "Aluno"){
+                                homeAluno();
+                            }
+                        } else {
+                            Toast.makeText(this, "Selecione se Você é um Aluno ou um Professsor", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, "Preencha sua senha corretamente", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Preencha o campo email corratamente", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Preencha o campo rgm corretamente", Toast.LENGTH_SHORT).show();
             }
-        }else{
-            Toast.makeText(this, "Preencha o campo Email corretamente", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Preencha o campo nome corretamente", Toast.LENGTH_SHORT).show();
         }
     }
-
     public void cadastrarUsuario(Usuario usuario) {
        usuarioDAO.cadastrarUsuario(usuario, new FirebaseAuth.AuthStateListener() {
            @Override
            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                // Este método será chamado quando o estado de autenticação mudar
-               // Você pode adicionar código aqui para lidar com diferentes estados de autenticação
+               // Serve para lidar com diferentes estados de autenticação
+               if (firebaseAuth.getCurrentUser() != null){
+                   usuarioDAO.adicionarDadosUsuario(usuario);//método que adiciona os dados do usuario ao FireStore
+               }
            }
        });
+    }
+
+
+
+
+
+    private String modoSelecionando(){
+        int modoSelecionadoId = radioGroup.getCheckedRadioButtonId();
+
+        if (modoSelecionadoId == R.id.rdbAluno){
+            return "Aluno";
+        }
+        if (modoSelecionadoId== R.id.rdbProfessor){
+            return "Professor";
+        }
+        else {
+            return null;
+        }
+
     }
 
 

@@ -6,18 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".activities.CadastroActivity">
 
+
     <EditText
         android:id="@+id/edtEmail"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="Digite seu nome Completo"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="Digite seu Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintStart_toStartOf="@+id/edtRgm"
+        app:layout_constraintTop_toBottomOf="@+id/edtRgm" />
 
     <EditText
         android:id="@+id/edtSenha"
@@ -27,16 +26,26 @@
         android:ems="10"
         android:hint="Digite uma senha"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/edtEmail"
+        app:layout_constraintStart_toStartOf="@+id/edtEmail"
         app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
 
-    
+    <EditText
+        android:id="@+id/edtNome"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:hint="Digite seu nome completo"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnCadastrar"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="100dp"
         android:onClick="validarCampos"
         android:text="Cadastrar"
         android:textSize="25sp"
@@ -44,5 +53,92 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtModo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modo"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
+        app:layout_constraintStart_toStartOf="@+id/txtSenha"
+        app:layout_constraintTop_toTopOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.428" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/edtSenha"
+        app:layout_constraintTop_toBottomOf="@+id/edtSenha">
+
+        <RadioButton
+            android:id="@+id/rdbProfessor"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:text="Professor" />
+
+        <RadioButton
+            android:id="@+id/rdbAluno"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:text="Aluno" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/txtNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="Nome"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtNome"
+        app:layout_constraintEnd_toStartOf="@+id/edtNome"
+        app:layout_constraintTop_toTopOf="@+id/edtNome" />
+
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="20sp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/edtEmail"
+        app:layout_constraintStart_toStartOf="@+id/txtNome"
+        app:layout_constraintTop_toTopOf="@+id/edtEmail" />
+
+    <TextView
+        android:id="@+id/txtSenha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Senha"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtSenha"
+        app:layout_constraintStart_toStartOf="@+id/txtEmail"
+        app:layout_constraintTop_toTopOf="@+id/edtSenha" />
+
+    <TextView
+        android:id="@+id/txtRgm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="RGM"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtRgm"
+        app:layout_constraintStart_toStartOf="@+id/txtNome"
+        app:layout_constraintTop_toTopOf="@+id/edtRgm" />
+
+    <EditText
+        android:id="@+id/edtRgm"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:hint="Digite seu RGM"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/edtNome"
+        app:layout_constraintTop_toBottomOf="@+id/edtNome" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

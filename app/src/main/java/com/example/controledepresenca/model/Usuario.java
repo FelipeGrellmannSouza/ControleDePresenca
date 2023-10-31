@@ -5,7 +5,7 @@ public class Usuario {
     private String email;
     private String senha;
     private String rgm;
-    private String cargo;
+    private String Modo;
 
     public Usuario(){
     }
@@ -42,11 +42,11 @@ public class Usuario {
         this.rgm = rgm;
     }
 
-    public String getCargo() {
-        return cargo;
+    public String getModo() {
+        return Modo;
     }
 
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
+    public void setModo(String modo) {
+        this.Modo = modo;
     }
 }
