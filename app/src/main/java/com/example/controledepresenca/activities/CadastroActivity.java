@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controledepresenca.DAO.UsuarioDAO;
@@ -32,6 +33,7 @@ public class CadastroActivity extends AppCompatActivity {
     Button btnCadastrar;
     RadioGroup radioGroup;
     RadioButton rdbAluno, rdbProfessor;
+    TextView txtNome, txtSenha, txtRgm, txtEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
         Incializar();
 
+        alternarModoCadastro();
     }
     //método para organização do código
     public void Incializar(){
@@ -50,7 +53,11 @@ public class CadastroActivity extends AppCompatActivity {
         rdbAluno = findViewById(R.id.rdbAluno);
         rdbProfessor = findViewById(R.id.rdbProfessor);
         edtRgm = findViewById(R.id.edtRgm);
+        txtRgm = findViewById(R.id.txtRgm);
 
+        //Setando RGM INVISIVEL
+        txtRgm.setVisibility(View.INVISIBLE);
+        edtRgm.setVisibility(View.INVISIBLE);
         usuarioDAO = new UsuarioDAO(this);
     }
 
@@ -106,13 +113,29 @@ public class CadastroActivity extends AppCompatActivity {
        });
     }
 
+    private void alternarModoCadastro(){
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rdbAluno){
+                    txtRgm.setVisibility(View.VISIBLE);
+                    edtRgm.setVisibility(View.VISIBLE);
+                }
+                else if (checkedId == R.id.rdbProfessor) {
+                    txtRgm.setVisibility(View.INVISIBLE);
+                    edtRgm.setVisibility(View.INVISIBLE);
+                    edtRgm.setText("");
+                }
+            }
+        });
+    }
+
 
 
 
 
     private String modoSelecionando(){
         int modoSelecionadoId = radioGroup.getCheckedRadioButtonId();
-
         if (modoSelecionadoId == R.id.rdbAluno){
             return "Aluno";
         }

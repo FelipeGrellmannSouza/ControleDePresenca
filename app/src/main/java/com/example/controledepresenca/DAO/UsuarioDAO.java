@@ -28,9 +28,6 @@ public class UsuarioDAO {
         this.context = context;
     }
 
-
-
-
     //Cadastro FireAuth (Email E Senha)
     public void cadastrarUsuario(Usuario usuario, FirebaseAuth.AuthStateListener authListener) {
         auth.createUserWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -65,10 +62,10 @@ public class UsuarioDAO {
                 .document(auth.getCurrentUser().getUid()) //Define o Uid do usuario autenticado coomo ID do documento
                 .set(usuario) //define os dados do usuário no documento
                 .addOnSuccessListener(aVoid ->{
-                    Log.d("UsuarioDAO", "Dados do usuario adicionados com sucesso ao FireStore");
+                    Log.d("UsuarioDAO", "Dados do usuario adicionados com sucesso ao FireStore");//Log para informar que o Usuario foi cadastrado com sucesso
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(context, "Erro ao adicionar os dados do Usuario" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Erro ao adicionar os dados do Usuario" + e.getMessage(), Toast.LENGTH_SHORT).show();//Exibe mensagem de erro na tela
                 });
     }
 
