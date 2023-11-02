@@ -15,7 +15,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnCadastrar;
+    Button btnCadastrar,btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +23,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnCadastrar = findViewById(R.id.btnTelaCadastro);
+        btnLogin = findViewById(R.id.btnLogin);
 
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ModoActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });

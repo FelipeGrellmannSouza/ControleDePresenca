@@ -46,6 +46,8 @@ public class CadastroActivity extends AppCompatActivity {
 
     //método para organização do código
     public void Incializar(){
+        usuarioDAO = new UsuarioDAO(this);
+
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
         edtNome = findViewById(R.id.edtNome);
@@ -56,7 +58,6 @@ public class CadastroActivity extends AppCompatActivity {
         //Setando RGM INVISIVEL
         txtRgm.setVisibility(View.INVISIBLE);
         edtRgm.setVisibility(View.INVISIBLE);
-        usuarioDAO = new UsuarioDAO(this);
     }
 
     public void validarCampos(View view) {
