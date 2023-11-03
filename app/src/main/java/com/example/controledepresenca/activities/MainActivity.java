@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.controledepresenca.DAO.UsuarioDAO;
 import com.example.controledepresenca.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -16,15 +17,19 @@ import com.google.zxing.integration.android.IntentResult;
 public class MainActivity extends AppCompatActivity {
 
     Button btnCadastrar,btnLogin;
+    //UsuarioDAO usuarioDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //usuarioDAO = new UsuarioDAO(this);
+
         btnCadastrar = findViewById(R.id.btnTelaCadastro);
         btnLogin = findViewById(R.id.btnLogin);
 
+        //OnCLick do botão
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,5 +45,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
+
+    /*private void iniciarUsuarioLogado(){
+        usuarioDAO.iniciarUsuarioLogado();
+        finish();
+    }*/
+
 }

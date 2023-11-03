@@ -14,6 +14,7 @@ import com.example.controledepresenca.R;
 import com.example.controledepresenca.model.Usuario;
 import com.example.controledepresenca.util.ConfigDb;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtEmail, edtSenha;
@@ -21,12 +22,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private UsuarioDAO usuarioDAO;
     private FirebaseAuth auth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         inicializandoComponentes();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        usuarioDAO.iniciarUsuarioLogado();
     }
 
     private void inicializandoComponentes(){
@@ -52,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
             }else {Toast.makeText(this, "Digite sua Senha", Toast.LENGTH_SHORT).show();}
         }else {Toast.makeText(this, "Digite seu Email", Toast.LENGTH_SHORT).show();}
     }
+
+
 
 
 }
