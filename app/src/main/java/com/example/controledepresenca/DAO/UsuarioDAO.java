@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -186,5 +187,31 @@ public class UsuarioDAO {
                listener.onUsuarioDataReceived(null); //Usuario não encontrado
             });
     }
+
+    //---------------------------------------------------- Atualizar Presença ----------------------------------------------------
+    public void atualizarPresenca(String qrCodeEntrada, String qrCodeSaida) {
+        FirebaseUser usuarioAuth = auth.getCurrentUser();
+        if (usuarioAuth != null) {
+            DocumentReference alunoRef = firestore.collection("usuarios").document(usuarioAuth.getUid());
+
+            String presenca = "faltou"; // Define o padrão como "faltou"
+
+            if (qrCodeEntrada.equals("pre1") && qrCodeSaida.equals("pre2")) {
+                presenca = "presente"; // Se o QR Code corresponder à aula, define a presença como "presente"
+            }
+
+            // Atualiza o campo "presenca" no Firestore
+            alunoRef.update("presenca", presenca)
+                    .addOnSuccessListener(aVoid -> {
+                        // Atualização bem-sucedida
+                        Log.d("UsuarioDAO", "Presença atualizada com sucesso");
+                    })
+                    .addOnFailureListener(e -> {
+                        // Falha na atualização
+                        Log.w("UsuarioDAO", "Erro ao atualizar a presença", e);
+                    });
+        }
+    }
+
 
 }

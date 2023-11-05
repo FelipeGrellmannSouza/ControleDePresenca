@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.controledepresenca.DAO.UsuarioDAO;
 import com.example.controledepresenca.R;
@@ -59,10 +60,20 @@ public class AlunoActivity extends AppCompatActivity {
         if (intentResult != null) {
             String conteudo = intentResult.getContents();
             if (conteudo != null) {
-                txtTexto.setText(intentResult.getContents());
+                if(conteudo.equals("pre1")){
+                    Toast.makeText(this, "QR Code 1 lido com sucesso", Toast.LENGTH_SHORT).show();
+                    //tirar foto
+                    
+                }else{
+                    Toast.makeText(this, "QR Code Invalido", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
         }
     }
+
+
+
+
 }
