@@ -7,6 +7,7 @@ public class Usuario {
     private String rgm;
     private String modo;
 
+
     public Usuario(){
     }
 

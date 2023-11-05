@@ -30,6 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnDeslogarProfessor" />
 
     <ListView
+        android:id="@+id/listAlunosPresentes"
         android:layout_width="match_parent"
         android:layout_height="550dp"
         android:layout_marginStart="10dp"

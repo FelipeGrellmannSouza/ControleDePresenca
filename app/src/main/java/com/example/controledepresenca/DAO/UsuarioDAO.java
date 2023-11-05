@@ -1,17 +1,14 @@
 package com.example.controledepresenca.DAO;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.controledepresenca.activities.AlunoActivity;
-import com.example.controledepresenca.activities.CadastroActivity;
-import com.example.controledepresenca.activities.MainActivity;
 import com.example.controledepresenca.activities.ProfessorActivity;
 import com.example.controledepresenca.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,17 +22,25 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
+    private FirebaseStorage storage;
     private Context context;
 
     public UsuarioDAO(Context context){
-        auth = FirebaseAuth.getInstance();//inicializa o auth
-        firestore = FirebaseFirestore.getInstance();//incializa o fireStore
+        auth = FirebaseAuth.getInstance();//inicializa o auth (Cria conta Email e senha)
+        firestore = FirebaseFirestore.getInstance();//incializa o fireStore (Aramazena dados)
+        storage = FirebaseStorage.getInstance();//inicializa o fireStorage (armazena fotos)
         this.context = context;
     }
 
@@ -169,6 +174,11 @@ public class UsuarioDAO {
     //---------------------------------------------------- Obter Dados Do Usario ----------------------------------------------------
     public interface OnUsuarioDataReceivedListener {
         void onUsuarioDataReceived(Usuario usuario);
+
+    }
+
+    public interface OnUsuariosDataReceivedListener{
+        void onUsuariosDataReceived(List<String> nomesAlunos);
     }
 
     //obtem os dados do usuario no firestore
@@ -188,8 +198,55 @@ public class UsuarioDAO {
             });
     }
 
-    //---------------------------------------------------- Atualizar Presença ----------------------------------------------------
-    public void atualizarPresenca(String qrCodeEntrada, String qrCodeSaida) {
+
+    //obtem ID do usuario
+    public String getIdUsuairo(){
+        FirebaseUser usuarioAuth = auth.getCurrentUser();
+        if (usuarioAuth != null) {
+            return usuarioAuth.getUid(); //retorna Id do usuario
+        }else {
+            return null;
+        }
+
+    }
+
+    //obtem o nome dos alunos presentes
+    public void obterAlunosPresentes(OnUsuariosDataReceivedListener listener){
+        firestore.collection("usuarios")
+                .whereEqualTo("modo", "aluno")
+                .whereEqualTo("presenca", "presente")
+                .get()
+                .addOnCompleteListener(task -> {
+                   if (task.isSuccessful() && task.getResult() != null){
+                       List<String> nomesAlunos = new ArrayList<>();
+                       for (QueryDocumentSnapshot document : task.getResult()) {
+                           Usuario usuario = document.toObject(Usuario.class);
+                           nomesAlunos.add(usuario.getNome());
+                       }
+                       listener.onUsuariosDataReceived(nomesAlunos);
+                   }
+                });
+    }
+
+    //---------------------------------------------------- Atualizar  ----------------------------------------------------
+    public void atualizarPresenca(List<String> idsAlunos, String presenca){
+        for (String alunoId : idsAlunos) {
+            DocumentReference alunoRef = firestore.collection("usuarios").document(alunoId);
+
+            // Atualiza o campo "presenca" no Firestore
+            alunoRef.update("presenca", presenca)
+                    .addOnSuccessListener(aVoid -> {
+                        // Atualização bem-sucedida
+                        Log.d("UsuarioDAO", "Presença atualizada para 'faltou' para o aluno: " + alunoId);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Falha na atualização
+                        Log.w("UsuarioDAO", "Erro ao atualizar a presença para o aluno: " + alunoId, e);
+                    });
+        }
+    }
+
+    public void definirPresente(String qrCodeEntrada, String qrCodeSaida) {
         FirebaseUser usuarioAuth = auth.getCurrentUser();
         if (usuarioAuth != null) {
             DocumentReference alunoRef = firestore.collection("usuarios").document(usuarioAuth.getUid());
@@ -198,12 +255,13 @@ public class UsuarioDAO {
 
             if (qrCodeEntrada.equals("pre1") && qrCodeSaida.equals("pre2")) {
                 presenca = "presente"; // Se o QR Code corresponder à aula, define a presença como "presente"
-            }
 
+            }
             // Atualiza o campo "presenca" no Firestore
             alunoRef.update("presenca", presenca)
                     .addOnSuccessListener(aVoid -> {
                         // Atualização bem-sucedida
+                        Toast.makeText(context, "Você foi registrado como presente", Toast.LENGTH_SHORT).show();
                         Log.d("UsuarioDAO", "Presença atualizada com sucesso");
                     })
                     .addOnFailureListener(e -> {
@@ -213,5 +271,77 @@ public class UsuarioDAO {
         }
     }
 
+    public void definirFalta(OnUsuariosDataReceivedListener listener){
+        firestore.collection("usuarios")
+                .whereEqualTo("modo", "aluno")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<String> idsAlunos = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()){
+                            String alunoId = document.getId();
+                            idsAlunos.add(alunoId);
+                        }
+                        atualizarPresenca(idsAlunos, "faltou");
 
+                        //notificar que todos os alunos com modo "aluno" tiveram a presença definida como "faltou"
+                        listener.onUsuariosDataReceived(idsAlunos);
+                    }else {
+                        //lidar com erros
+                    }
+                    });
+    }
+
+
+    //método que atualiza a url da foto do usaurio no firestore
+    public void atualizarUrlFoto(String userId, String fotoUrl){
+        firestore.collection("usuarios")
+                .document(userId)
+                .update("urlFoto", fotoUrl)
+                .addOnSuccessListener(aVoid -> {
+                   Log.d("UsuarioDAO", "URL da imagem do usuário atualizado com sucesso");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("UsuarioDAO", "Erro ao atualizar URL da imagem do usario" ,e);
+                });
+    }
+
+    //---------------------------------------------------- Enviando Foto do usuario Para o Firebase Storage----------------------------------------------------
+
+    public interface OnUploadCompleteListener{
+        void onUploadComplete(String imageUrl);
+        void onUploadFailed(Exception e);
+    }
+
+    public void uploadFoto(Bitmap fotoBitmap, String userId, OnUploadCompleteListener  listener){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        //Nome Unico da foto = ao ID do usuario
+        String nomeFoto = userId + ".jpg";
+
+        //convertendo o bitmap para um array de bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        fotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        // Definindo o caminho onde a imagem será salva no Storage
+        StorageReference imagemRef = storageRef.child("fotos/" + nomeFoto);
+
+        //Enviando a imagem para o Storage
+        UploadTask uploadTask = imagemRef.putBytes(data);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            storageRef.child("fotos/" + nomeFoto).getDownloadUrl().addOnSuccessListener(uri -> {
+                String fotoUrl = uri.toString();
+
+                atualizarUrlFoto(userId, fotoUrl);
+
+                listener.onUploadComplete(fotoUrl);
+            });
+        });
+
+        uploadTask.addOnFailureListener(exeception -> {
+           //Lidar com erros
+        });
+    }
 }
