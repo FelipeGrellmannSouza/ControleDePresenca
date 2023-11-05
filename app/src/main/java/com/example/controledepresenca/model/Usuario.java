@@ -49,4 +49,5 @@ public class Usuario {
     public void setModo(String modo) {
         this.modo = modo;
     }
+
 }

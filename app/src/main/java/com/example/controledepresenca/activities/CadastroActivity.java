@@ -81,7 +81,7 @@ public class CadastroActivity extends AppCompatActivity {
                                 usuario.setRgm(rgm);
                                 usuario.setModo(modo);
                                 cadastrarUsuario(usuario);
-                                homeAluno();
+                                mainActivity();
                             } else {Toast.makeText(this, "Selecione se Você é um Aluno ou um Professsor", Toast.LENGTH_SHORT).show();}
                         } else {Toast.makeText(this, "Preencha sua senha corretamente", Toast.LENGTH_SHORT).show();}
                     } else {Toast.makeText(this, "Preencha o campo email corratamente", Toast.LENGTH_SHORT).show();}
@@ -101,6 +101,8 @@ public class CadastroActivity extends AppCompatActivity {
                         usuario.setRgm(rgm);
                         usuario.setModo(modo);
                         cadastrarUsuario(usuario);
+
+                        mainActivity();
                     } else {Toast.makeText(this, "Preencha sua senha corretamente", Toast.LENGTH_SHORT).show();}
                 } else {Toast.makeText(this, "Preencha o campo email corratamente", Toast.LENGTH_SHORT).show();}
             } else {Toast.makeText(this, "Preencha o campo nome corretamente", Toast.LENGTH_SHORT).show();}
@@ -122,9 +124,10 @@ public class CadastroActivity extends AppCompatActivity {
        });
     }
 
-    private void homeAluno(){
+    private void mainActivity(){
         Intent intent = new Intent(this, MainActivity.class);//mudar para home do aluno
         startActivity(intent);
+        finish();
     }
 
 }

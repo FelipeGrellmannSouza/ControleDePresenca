@@ -20,6 +20,14 @@ public class ProfessorActivity extends AppCompatActivity {
 
     }
 
+
+    public void iniciarAula(View view){
+        Intent intent = new Intent(this, AulaActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
     public void deslogarProfessor(View view){
         usuarioDAO.deslogar();
         Intent intent = new Intent(this, MainActivity.class);
