@@ -7,6 +7,8 @@ public class Usuario {
     private String rgm;
     private String modo;
 
+    private String urlFoto;
+
 
     public Usuario(){
     }
@@ -49,6 +51,14 @@ public class Usuario {
 
     public void setModo(String modo) {
         this.modo = modo;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
     }
 
 }

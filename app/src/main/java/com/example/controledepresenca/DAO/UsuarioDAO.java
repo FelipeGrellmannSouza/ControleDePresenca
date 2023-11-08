@@ -181,6 +181,10 @@ public class UsuarioDAO {
         void onUsuariosDataReceived(List<String> nomesAlunos);
     }
 
+    public interface OnEmailDataReceivedListener {
+        void onEmailDataReceived(String email);
+    }
+
     //obtem os dados do usuario no firestore
     public void obterDadosUsuario(String email,OnUsuarioDataReceivedListener listener) {
     firestore.collection("usuarios")
@@ -196,6 +200,24 @@ public class UsuarioDAO {
                }
                listener.onUsuarioDataReceived(null); //Usuario não encontrado
             });
+    }
+
+    public void getEmailByNome(String nome, OnEmailDataReceivedListener listener){
+        firestore.collection("usuarios")
+                .whereEqualTo("nome", nome)
+                .whereEqualTo("modo", "aluno") // Certifique-se de que seja um aluno
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Usuario usuario = document.toObject(Usuario.class);
+                            String email = usuario.getEmail();
+                            listener.onEmailDataReceived(email);
+                            return;
+                        }
+                    }
+                    listener.onEmailDataReceived(null);
+                });
     }
 
 

@@ -48,5 +48,9 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation("androidx.multidex:multidex:2.0.1")
 
-    implementation("com.google.android.gms:play-services-vision:20.1.3") //usados para capturar a foto
+    //usados para capturar a foto
+    implementation("com.google.android.gms:play-services-vision:20.1.3")
+
+    //para mostrar a foto do aluno
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
